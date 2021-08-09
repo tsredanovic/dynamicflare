@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from pathlib import Path
 
@@ -11,10 +12,23 @@ CONFIG_PATH = os.environ.get('DF_CONFIG_PATH', Path.joinpath(Path(__file__).reso
 
 Path.joinpath(Path(__file__).resolve().parent, 'config.json')
 
-with open(CONFIG_PATH) as jsonFile:
-    config_json = json.load(jsonFile)
+with open(CONFIG_PATH) as f:
+    config_json = json.load(f)
 
 CLOUDFLARE_TOKEN = config_json['cloudflare_token']
+
+
+# Logging
+logger = logging.getLogger('dynamicflare')
+logger.setLevel(logging.DEBUG)
+
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+
+logger.addHandler(ch)
 
 
 # Helpers
@@ -66,13 +80,23 @@ def update_record_ip(zone_id, record_id, ip):
 
 
 # Main
+logger.info('Resolving IP.')
 ip = resolve_ip(['cloudflare', 'dyndns', 'freedns', 'googledomains'])
+logger.info('Resolved IP: {}.'.format(ip))
 
 for record in config_json['records']:
+    logger.info('{} - Updating.'.format((record['domain'], record['record'])))
+    logger.info('{} - Getting zone ID.'.format((record['domain'], record['record'])))
     zone_id = get_zone_id(record['domain'])
+    logger.info('{} - Got zone ID: {}.'.format((record['domain'], record['record']), zone_id))
+    logger.info('{} - Getting recod ID and record IP.'.format((record['domain'], record['record'])))
     record_id, record_ip = get_record_data(zone_id, record['record'])
+    logger.info('{} - Got recod ID and record IP: {}, {}.'.format((record['domain'], record['record']), record_id, record_ip))
 
     if record_ip == ip:
+        logger.info('{} - Same resolved IP and record IP. Skipping update.'.format((record['domain'], record['record'])))
         continue
 
+    logger.info('{} - Updating record IP.'.format((record['domain'], record['record'])))
     update_record_ip(zone_id, record_id, ip)
+    logger.info('{} - Record IP updated: {}.'.format((record['domain'], record['record']), ip))
