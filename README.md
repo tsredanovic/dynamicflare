@@ -81,12 +81,12 @@ crontab -l
 
 ## Logging
 
-1. Pipe the output of your cron command through logger so they end up in the `syslog`. Add `2>&1 | logger -t dynamicflare` to the cron command:
+1. Pipe the output of your cron command through logger so it ends up in the `syslog`. Add `2>&1 | logger -t dynamicflare` to the cron command:
 ```bash
 */5 * * * * /full/path/to/dynamicflare/venv/bin/python /full/path/to/dynamicflare/main.py 2>&1 | logger -t dynamicflare
 ```
 
-2. Query `syslog` with the `dynamicflare` tag:
+2. Query `syslog` with the `dynamicflare` tag to see the logs:
 ```bash
 grep "dynamicflare" /var/log/syslog
 ```
