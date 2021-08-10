@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 import requests
-from checkip.ip import resolve_ip
+from checkip import resolve_ip
 
 
 ### Config
