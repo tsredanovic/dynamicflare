@@ -40,7 +40,7 @@ pip install -r requirements.txt
         - `record` - A record name
 
 `config.json` example:
-```
+```json
 {
     "cloudflare_token": "_your_cloudflare_api_token_",
     "records": [
@@ -79,7 +79,7 @@ crontab -l
 ```
 
 
-## Logging
+## Logging (optional)
 
 1. Pipe the output of your cron command through logger so it ends up in the `syslog`. Add `2>&1 | logger -t dynamicflare` to the cron command:
 ```bash
@@ -89,6 +89,24 @@ crontab -l
 2. Query `syslog` with the `dynamicflare` tag to see the logs:
 ```bash
 grep "dynamicflare" /var/log/syslog
+```
+
+
+## Discord Notifications (optional)
+
+1. Create a discord webhook as explained [here](https://support.discord.com/hc/en-us/articles/228383668).
+
+2. Add the created discord webhook URL to `config.json` (multiple webhooks are also supported):
+```json
+{
+    "cloudflare_token": "_your_cloudflare_api_token_",
+    "discord_webhook_urls": [
+        "_your_discord_webhook_url_"
+    ],
+    "records": [
+        ...
+    ]
+}
 ```
 
 
