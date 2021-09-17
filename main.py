@@ -11,8 +11,6 @@ from checkip import resolve_ip
 
 CONFIG_PATH = os.environ.get('DF_CONFIG_PATH', Path.joinpath(Path(__file__).resolve().parent, 'config.json'))
 
-Path.joinpath(Path(__file__).resolve().parent, 'config.json')
-
 with open(CONFIG_PATH) as f:
     config_json = json.load(f)
 
